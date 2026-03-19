@@ -30,7 +30,7 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
 			code,
 			client_id: import.meta.env.HCA_CLIENT_ID,
 			client_secret: import.meta.env.HCA_CLIENT_SECRET,
-			redirect_uri: import.meta.env.HCA_REDIRECT_URI,
+			redirect_uri: new URL("/auth/callback", url).toString(),
 		}),
 	});
 

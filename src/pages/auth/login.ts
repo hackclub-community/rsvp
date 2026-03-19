@@ -22,7 +22,10 @@ export const GET: APIRoute = async ({ cookies, redirect, url }) => {
 
 	const authUrl = new URL("https://auth.hackclub.com/oauth/authorize");
 	authUrl.searchParams.set("client_id", clientId);
-	authUrl.searchParams.set("redirect_uri", import.meta.env.HCA_REDIRECT_URI);
+	authUrl.searchParams.set(
+		"redirect_uri",
+		new URL("/auth/callback", url).toString(),
+	);
 	authUrl.searchParams.set("response_type", "code");
 	authUrl.searchParams.set("scope", "verification_status slack_id");
 	authUrl.searchParams.set("state", state);

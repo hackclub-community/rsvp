@@ -15,8 +15,7 @@ const {
 	ogImage,
 	minimal = false,
 } = Astro.props;
-const siteUrl = import.meta.env.PUBLIC_URL || "http://localhost:4321";
-const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const canonicalUrl = Astro.url.origin + Astro.url.pathname;
 ---
 
 <html lang="en">

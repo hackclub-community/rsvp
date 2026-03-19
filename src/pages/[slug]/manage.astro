@@ -51,7 +51,7 @@ const feedbackList = form.feedbackEnabled
 	: [];
 
 const total = rsvpList.length;
-const siteUrl = import.meta.env.PUBLIC_URL || "http://localhost:4321";
+const siteUrl = Astro.url.origin;
 ---
 
 <Base title={`Manage - ${form.title}`}>
