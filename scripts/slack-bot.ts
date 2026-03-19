@@ -81,16 +81,23 @@ const app = new App({
 	socketMode: true,
 });
 
-let publicUrl: string;
-if (process.env.DEV) {
-	publicUrl = "https://rsvp.hackclub.community".replace(/\/$/, "");
-} else {
-	publicUrl = (
-		process.env.PUBLIC_URL || "https://rsvp.hackclub.community"
-	).replace(/\/$/, "");
+const rawPublicUrl = process.env.DEV
+	? "https://rsvp.hackclub.community"
+	: process.env.PUBLIC_URL || "https://rsvp.hackclub.community";
+
+const publicUrls = rawPublicUrl
+	.split(",")
+	.map((u) => u.trim().replace(/\/$/, ""))
+	.filter(Boolean);
+
+if (publicUrls.length === 0) {
+	throw new Error("PUBLIC_URL must contain at least one valid URL");
 }
-const escapedUrl = publicUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const linkRegex = new RegExp(`^${escapedUrl}/([\\w-]+)$`);
+
+const escapedUrls = publicUrls.map((u) =>
+	u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+);
+const linkRegex = new RegExp(`^(?:${escapedUrls.join("|")})/([\\w-]+)$`);
 
 app.event("link_shared", async ({ event, client }) => {
 	const unfurls: Record<string, object> = {};
