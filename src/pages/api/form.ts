@@ -43,9 +43,36 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
 		const websiteRaw = (data.get("website") as string)?.trim() || null;
 		const website = websiteRaw;
 
+		const title = (data.get("title") as string)?.trim();
+		if (!title) {
+			return redirect(`/${form.slug}/manage?error=Title is required`);
+		}
+
+		const description = (data.get("description") as string)?.trim() || null;
+
+		const newSlug = (data.get("slug") as string)?.toLowerCase().trim();
+		if (!newSlug) {
+			return redirect(`/${form.slug}/manage?error=URL slug is required`);
+		}
+		if (!/^[a-z0-9-]+$/.test(newSlug)) {
+			return redirect(`/${form.slug}/manage?error=URL can only contain lowercase letters, numbers, and hyphens`);
+		}
+		if (RESERVED_SLUGS.has(newSlug)) {
+			return redirect(`/${form.slug}/manage?error=That URL is reserved`);
+		}
+		if (newSlug !== form.slug) {
+			const existing = await db.select().from(forms).where(eq(forms.slug, newSlug)).get();
+			if (existing) {
+				return redirect(`/${form.slug}/manage?error=That URL is already taken`);
+			}
+		}
+
 		await db
 			.update(forms)
 			.set({
+				title,
+				description,
+				slug: newSlug,
 				isOpen: data.has("isOpen"),
 				isPublic: data.has("isPublic"),
 				feedbackEnabled: data.has("feedbackEnabled"),
@@ -54,7 +81,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
 			})
 			.where(eq(forms.id, id));
 
-		return redirect(`/${form.slug}/manage`);
+		return redirect(`/${newSlug}/manage`);
 	}
 
 	if (method === "DELETE") {
