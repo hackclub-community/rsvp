@@ -153,3 +153,55 @@ const error = Astro.url.searchParams.get("error");
     </form>
   </div>
 </Base>
+
+<dialog id="confirm-dialog" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-sm w-full backdrop:bg-black/60 backdrop:backdrop-blur-sm">
+  <h2 class="text-base font-semibold text-zinc-100 mb-2">Before you create</h2>
+  <p class="text-sm text-zinc-400 mb-1">
+    The URL and name <span class="text-zinc-200 font-medium">cannot be changed</span> after creation.
+  </p>
+  <ul class="text-sm text-zinc-500 mt-3 mb-5 space-y-1">
+    <li>Name: <span id="preview-title" class="text-zinc-300 font-medium"></span></li>
+    <li>URL: <span class="text-zinc-600">/</span><span id="preview-slug" class="text-zinc-300 font-mono"></span></li>
+  </ul>
+  <div class="flex gap-3">
+    <button
+      id="dialog-cancel"
+      type="button"
+      class="flex-1 px-4 py-2.5 rounded-xl bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-colors text-sm font-medium"
+    >
+      Cancel
+    </button>
+    <button
+      id="dialog-confirm"
+      type="button"
+      class="flex-1 px-4 py-2.5 rounded-xl bg-primary text-white hover:bg-primary-dark transition-colors text-sm font-medium shadow-lg shadow-primary/20"
+    >
+      Create form
+    </button>
+  </div>
+</dialog>
+
+<script>
+  const form = document.querySelector('form[action="/api/form"]') as HTMLFormElement;
+  const dialog = document.getElementById('confirm-dialog') as HTMLDialogElement;
+  const previewTitle = document.getElementById('preview-title')!;
+  const previewSlug = document.getElementById('preview-slug')!;
+  const cancelBtn = document.getElementById('dialog-cancel')!;
+  const confirmBtn = document.getElementById('dialog-confirm')!;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = (document.getElementById('title') as HTMLInputElement).value.trim();
+    const slug = (document.getElementById('slug') as HTMLInputElement).value.trim();
+    previewTitle.textContent = title;
+    previewSlug.textContent = slug;
+    dialog.showModal();
+  });
+
+  cancelBtn.addEventListener('click', () => dialog.close());
+
+  confirmBtn.addEventListener('click', () => {
+    dialog.close();
+    form.submit();
+  });
+</script>

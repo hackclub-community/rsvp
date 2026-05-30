@@ -105,6 +105,17 @@ const siteUrl = Astro.url.origin;
         </label>
 
         <div class="space-y-1.5 pt-1">
+          <label for="description" class="block text-sm text-zinc-300">Description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            class="w-full bg-zinc-800/50 border border-zinc-700/50 rounded-xl px-4 py-2.5 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all resize-none text-sm"
+            placeholder="What is this for?"
+          >{form.description || ''}</textarea>
+        </div>
+
+        <div class="space-y-1.5 pt-1">
           <label for="website" class="block text-sm text-zinc-300">Website</label>
           <input
             type="url"

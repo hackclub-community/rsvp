@@ -43,6 +43,9 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
 		const websiteRaw = (data.get("website") as string)?.trim() || null;
 		const website = websiteRaw;
 
+		const description =
+			(data.get("description") as string)?.trim() || null;
+
 		await db
 			.update(forms)
 			.set({
@@ -51,6 +54,7 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
 				feedbackEnabled: data.has("feedbackEnabled"),
 				slackChannelId,
 				website,
+				description,
 			})
 			.where(eq(forms.id, id));
 
